@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-6!r+9(q_h0v7vb&_ed!87gj4hw*l$abcy-0j2ygtlf92xv=5yk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['personal.tmkgosiemang.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'questions.apps.QuestionsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

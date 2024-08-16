@@ -1,7 +1,7 @@
 # Things to do
 
-- [ ] Receive file in pdf format
-- [ ] Text extraction: use pdf libraries to extract text
+- [x] Receive file in pdf format
+- [x] Text extraction: use pdf libraries to extract text
 - [ ] Text processing: clean and preprocess the text
 - [ ] NLP: utilise NLP techniques and libraries
  - spaCy
