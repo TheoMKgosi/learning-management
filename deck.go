@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,4 +48,46 @@ func createDeckHandler(c *gin.Context) {
 	insertID, _ := result.LastInsertId()
 	d.ID = int(insertID)
 	c.JSON(http.StatusOK, d)
+}
+
+func editDeckHandler(c *gin.Context)  {
+  deckID, err := strconv.Atoi(c.Param("deckID"))  
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid deck ID"})
+    return
+  }
+
+  var deck Deck
+  if err := c.ShouldBind(&deck); err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+    return
+  }
+  if deck.Name == "" {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Name is required"})
+    return
+  }
+
+  _, err = db.Exec("UPDATE decks SET name = ? WHERE id = ?", deck.Name , deckID)
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Deck update unsuccessful"})
+    return
+  }
+  c.JSON(http.StatusOK, gin.H{"message": "Deck updated successfully"})
+}
+
+func deleteDeckHandler(c *gin.Context)  {
+  deckID, err := strconv.Atoi(c.Param("deckID"))  
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid deck ID"})
+    return
+  }
+
+  _, err = db.Exec("DELETE FROM decks WHERE id = ?", deckID)
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Deck delete unsuccessful"})
+    return
+  }
+  c.JSON(http.StatusOK, gin.H{"meesage": "Deck deleted successfully"})
+
+  
 }

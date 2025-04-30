@@ -71,3 +71,44 @@ func createCardHandler(c *gin.Context) {
 	card.NextReview.String = now
 	c.JSON(http.StatusOK, card)
 }
+
+func editCardHandler(c *gin.Context)  {
+  cardID, err := strconv.Atoi(c.Param("cardID"))  
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid card ID"})
+    return
+  }
+
+  var card Card
+  if err := c.ShouldBind(&card); err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+    return
+  }
+  if card.Front == "" || card.Back == "" {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Both front and back of the card are required"})
+    return
+  }
+
+  _, err = db.Exec("UPDATE cards SET front = ?, back = ? WHERE id = ?", card.Front, card.Back, cardID)
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Card update unsuccessful"})
+    return
+  }
+  c.JSON(http.StatusOK, gin.H{"message": "Card updated successfully"})
+}
+
+func deleteCardHandler(c *gin.Context)  {
+  cardID, err := strconv.Atoi(c.Param("cardID"))  
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid card ID"})
+    return
+  }
+
+  _, err = db.Exec("DELETE FROM cards WHERE id = ?", cardID)
+  if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "Card delete unsuccessful"})
+    return
+  }
+  c.JSON(http.StatusOK, gin.H{"meesage": "Card deleted successfully"})
+
+}
