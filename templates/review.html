@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Review Cards</title>
+    <style>
+      .back {
+        display: none;
+      } 
+
+      .card {
+        padding: 5px;
+        border: solid black;
+        border-radius: 5px;
+        max-width: 350px;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Review</h1>
+    {{if .message}}
+    <p>{{.message}}</p>
+    {{else if .card}}
+    <div>
+
+      <div class="card">
+        <h2>Front:</h2>
+        <pre>{{.card.Front}}</pre>
+        <button type="button" onclick="flip()" >Flip card</button>
+      </div>
+
+      <div class="back card" id="back">
+        <h2 >Back:</h2>
+        <pre>{{.card.Back}}</pre>
+      </div>
+    </div>
+    <form action="/decks/{{.card.DeckID}}/review" method="post">
+      <input type="hidden" name="card_id" value="{{.card.ID}}">
+      <button type="submit" name="rating" value="good">I remembered (Good)</button>
+      <button type="submit" name="rating" value="again">I forgot (Again)</button>
+    </form>
+    {{end}}
+    <p><a href="/">Back to Decks</a></p>
+  </body>
+  <script>
+  const back = document.getElementById("back")
+  function flip(){
+    if(back.style.display == "none") {
+      back.style.display = "block"
+    } else {
+      back.style.display = "none"
+    }
+  }
+  </script>
+</html>

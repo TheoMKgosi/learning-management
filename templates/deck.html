@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Deck: {{.deck.Name}}</title>
+    <style>
+    textarea {
+      display: block;
+      margin-bottom: 2px;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Deck: {{.deck.Name}}</h1>
+    <p><a href="/">Go back to decks</a></p>
+    <h2>Cards</h2>
+    <ul>
+      {{range .cards}}
+      <li><b>{{.Front}}</b> - {{.Back}}</li>
+      {{else}}
+      <li>No cards found.</li>
+      {{end}}
+    </ul>
+    <p><a href="/decks/{{.deck.ID}}/review">Review Cards</a></p>
+
+    <!-- Form to add a new card -->
+    <h3>Add a New Card</h3>
+    <form action="/decks/{{.deck.ID}}/cards" method="post">
+      <textarea rows="3" cols="50" name="front" placeholder="Front text" required></textarea>
+      <textarea rows="5" cols="50" name="back" placeholder="Back text" required></textarea>
+      <button type="submit">Add Card</button>
+    </form>
+  </body>
+</html>
