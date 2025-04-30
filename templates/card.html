@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Card</title>
+    <style>
+    textarea {
+      display: block;
+      margin-bottom: 2px;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Card</h1>
+    <p><a href="/decks/{{.card.DeckID}}">Go back to decks</a></p>
+    <h2>Cards</h2>
+
+    <!-- Form to add a new card -->
+    <h3>Add a New Card</h3>
+    <form action="/cards/{{.card.ID}}" method="post">
+      <textarea rows="3" cols="50" name="front" placeholder="Front text" required>{{.card.Front}}</textarea>
+      <textarea rows="5" cols="50" name="back" placeholder="Back text" required>{{.card.Back}}</textarea>
+      <button type="submit">edit Card</button>
+    </form>
+  </body>
+</html>
