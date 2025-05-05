@@ -1,0 +1,6 @@
+<li class="editing" hx-post="/decks/{{.deck.ID}}" hx-target="closest li" hx-swap="outerHTML">
+  <input type="text" name="name" value="{{.deck.Name}}" required>
+  <button type="submit">Save</button>
+  <!-- A cancel button that returns the non-edit state -->
+  <button type="button" hx-get="/decks/{{.ID}}" hx-target="closest li" hx-swap="outerHTML">Cancel</button>
+</li>

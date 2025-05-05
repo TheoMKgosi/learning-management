@@ -7,6 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Deck represents a flashcard deck.
+type Deck struct {
+  ID   int  `form:"id"  json:"id"`
+  Name string  `form:"name" json:"name"`
+}
+
 // getDecksHandler returns all decks as JSON.
 func getDecksHandler(c *gin.Context) {
 	rows, err := db.Query("SELECT id, name FROM decks")

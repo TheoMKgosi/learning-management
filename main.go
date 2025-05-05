@@ -16,30 +16,12 @@ const (
   authPassword = "secret"
 )
 
-// Deck represents a flashcard deck.
-type Deck struct {
-  ID   int  `form:"id"  json:"id"`
-  Name string  `form:"name" json:"name"`
-}
-
-// Card represents a flashcard with spaced repetition fields.
-type Card struct {
-  ID         int     `form:"id" json:"id"`
-  DeckID     int     `form:"deck_id" json:"deck_id"`
-  Front      string  `form:"front" json:"front"`
-  Back       string  `form:"back" json:"back"`
-  Interval   int     `form:"interval" json:"interval"`    // in days
-  Ease       float64 `form:"ease" json:"ease"`        // ease factor (default 2.5)
-  LastReview sql.NullString  `form:"last_review" json:"last_review"` // stored as RFC3339 string
-  NextReview sql.NullString  `form:"next_revie " json:"next_review"` // scheduled next review time (RFC3339)
-}
-
 var db *sql.DB
 
 func main() {
   var err error
   // Open (or create) the SQLite database.
-  db, err = sql.Open("sqlite3", "./anki_lite.db")
+  db, err = sql.Open("sqlite3", "./learning-management.db")
   if err != nil {
     panic("Error opening database: " + err.Error())
   }
@@ -61,6 +43,7 @@ func main() {
   router.GET("/", indexHandler)
   router.GET("/decks/:deckID", deckDetailHandler)
   router.GET("/cards/:cardID", cardDetailHandler)
+  router.GET("/decks/:deckID/edit", deckEditDetailHandler)
 
   // JSON endpoints for managing decks and cards.
   router.GET("/decks", getDecksHandler)
@@ -161,9 +144,27 @@ func deckDetailHandler(c *gin.Context) {
   })
 }
 
+func deckEditDetailHandler(c *gin.Context)  {
+  deckID, err := strconv.Atoi(c.Param("deckID"))
+  if err != nil {
+    log.Println(err)
+    c.String(http.StatusBadRequest, "Invalid deck ID")
+    return
+  }
+
+  var deck Deck
+  err = db.QueryRow("SELECT id, name FROM decks WHERE id = ?", deckID).Scan(&deck.ID, &deck.Name)
+  if err != nil {
+    c.String(http.StatusBadRequest, "Something went wrong")
+  }
+
+  c.HTML(http.StatusOK, "deckEdit.html", gin.H{
+    "deck": deck,
+  })
+}
+
 func cardDetailHandler(c *gin.Context)  {
   id, err := strconv.Atoi(c.Param("cardID"))
-  log.Println(id)
   if err != nil {
     c.String(http.StatusBadRequest, "Invalid card ID")
     return

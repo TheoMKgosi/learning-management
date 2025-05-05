@@ -1,12 +1,25 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+// Card represents a flashcard with spaced repetition fields.
+type Card struct {
+  ID         int     `form:"id" json:"id"`
+  DeckID     int     `form:"deck_id" json:"deck_id"`
+  Front      string  `form:"front" json:"front"`
+  Back       string  `form:"back" json:"back"`
+  Interval   int     `form:"interval" json:"interval"`    // in days
+  Ease       float64 `form:"ease" json:"ease"`        // ease factor (default 2.5)
+  LastReview sql.NullString  `form:"last_review" json:"last_review"` // stored as RFC3339 string
+  NextReview sql.NullString  `form:"next_revie " json:"next_review"` // scheduled next review time (RFC3339)
+}
 
 // getCardsHandler returns cards for a specific deck.
 func getCardsHandler(c *gin.Context) {
