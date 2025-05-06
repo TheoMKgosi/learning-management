@@ -1,0 +1,44 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main    # Change this to match your deployment branch
+
+jobs:
+  build-and-deploy:
+    runs-on: debian-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.24'   # Set to your Go version
+
+    - name: Build Application
+      run: |
+        go build -o learning-management .
+
+    # Option 1: Using a pre-made SSH Action that copies files and executes remote commands.
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        # Copy the new binary and templates (adjust paths as needed):
+        script: |
+          # Create the destination directory if it doesn’t exist.
+          mkdir -p ${{ secrets.DEST_PATH }}
+          # Copy the binary. (You might use rsync or scp if you have many files.)
+          cp anki-lite ${{ secrets.DEST_PATH }}/learning-management
+          # Copy templates directory (if needed)
+          cp -r templates ${{ secrets.DEST_PATH }}/templates
+          # (Optional) copy any static files.
+          cp -r static ${{ secrets.DEST_PATH }}/static
+          # Restart the service (adjust the command as needed)
+          ${{ secrets.RESTART_SCRIPT }}
