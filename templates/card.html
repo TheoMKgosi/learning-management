@@ -1,0 +1,11 @@
+<li id="card-{{ .card.ID }}">
+  <strong>Question:</strong> {{ .card.Question }}<br/>
+  <strong>Answer:</strong> {{ .card.Answer }}<br/>
+  {{ if .card.DeckName }}<em>Deck: {{ .card.DeckName }}</em><br/>{{ end }}
+  <button hx-post="/cards/{{ .card.ID }}/delete" hx-target="#card-{{ .card.ID }}" hx-swap="outerHTML">
+    Delete
+  </button>
+  <button hx-post="/cards/{{ .card.ID }}/review" hx-target="#card-{{ .card.ID }}" hx-swap="outerHTML">
+    Reviewed
+  </button>
+</li>

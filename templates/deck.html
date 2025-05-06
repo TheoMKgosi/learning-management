@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deck: {{ .deck.Name }}</title>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+</head>
+<body>
+  <h1>Deck: {{ .deck.Name }}</h1>
+  <nav>
+    <a href="/decks">Back to Decks</a> |
+    <a href="/decks/{{ .deck.ID }}/review">Review Cards</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+  <h2>Cards in this Deck</h2>
+  <ul>
+    {{ range .cards }}
+      <li>
+        <strong>Q:</strong> {{ .Question }}<br/>
+        <strong>A:</strong> {{ .Answer }}<br/>
+        <small>Next Review: {{ .NextReview.Format "2006-01-02 15:04:05" }}</small>
+      </li>
+    {{ else }}
+      <li>No cards in this deck yet.</li>
+    {{ end }}
+  </ul>
+  <a href="/decks/{{ .deck.ID }}/cards/new">Add a New Card</a>
+</body>
+</html>

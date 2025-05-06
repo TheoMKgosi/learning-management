@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Review Deck</title>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+</head>
+<body>
+  <h1>Review Cards for Deck {{ .deckID }}</h1>
+  <nav>
+    <a href="/decks/{{ .deckID }}">Back to Deck</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+  {{ if .cards }}
+    <ul>
+    {{ range .cards }}
+      <li>
+        <p>
+          <strong>Question:</strong> {{ .Question }}<br/>
+          <strong>Answer:</strong> {{ .Answer }}
+        </p>
+        <form method="post" action="/cards/{{ .ID }}/review">
+          <p>
+            How did you do?
+            <button type="submit" name="rating" value="easy">Easy</button>
+            <button type="submit" name="rating" value="hard">Hard</button>
+          </p>
+        </form>
+        <small>Current Interval: {{ .Interval }} day(s)
+        | Next Review: {{ .NextReview.Format "2006-01-02 15:04:05" }}</small>
+      </li>
+    {{ end }}
+    </ul>
+  {{ else }}
+    <p>No cards due for review in this deck. Great job!</p>
+  {{ end }}
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Decks</title>
+</head>
+<body>
+  <h1>Your Decks</h1>
+  <nav>
+    <a href="/logout">Logout</a>
+  </nav>
+  <ul>
+    {{ range .decks }}
+      <li>
+        <a href="/decks/{{ .ID }}">{{ .Name }}</a>
+      </li>
+    {{ else }}
+      <li>No decks available yet.</li>
+    {{ end }}
+  </ul>
+  <a href="/decks/new">Create New Deck</a>
+</body>
+</html>

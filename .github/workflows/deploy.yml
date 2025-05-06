@@ -35,7 +35,7 @@ jobs:
           # Create the destination directory if it doesn’t exist.
           mkdir -p ${{ secrets.DEST_PATH }}
           # Copy the binary. (You might use rsync or scp if you have many files.)
-          cp anki-lite ${{ secrets.DEST_PATH }}/learning-management
+          cp learning-management ${{ secrets.DEST_PATH }}/learning-management
           # Copy templates directory (if needed)
           cp -r templates ${{ secrets.DEST_PATH }}/templates
           # (Optional) copy any static files.

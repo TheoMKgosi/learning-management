@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Anki Lite - Home</title>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+</head>
+<body>
+  <nav>
+      <a href="/">Home</a> |
+      <a href="/decks">Decks</a> |
+      <a href="/reviews">Reviews</a> |
+      <a href="/logout">Logout</a>
+  </nav>
+  <h1>Welcome, {{.username}}</h1>
+  <h2>Flashcards</h2>
+  <ul id="cards-list">
+    {{ range .cards }}
+      <li id="card-{{ .ID }}">
+        <strong>Question:</strong> {{ .Question }}<br/>
+        <strong>Answer:</strong> {{ .Answer }}<br/>
+        {{ if .DeckName }}<em>Deck: {{ .DeckName }}</em><br/>{{ end }}
+        {{ if .NextReview.Valid }}
+           <small>Next Review: {{ .NextReview.String }}</small><br/>
+        {{ end }}
+        <button hx-post="/cards/{{ .ID }}/delete" hx-target="#card-{{ .ID }}" hx-swap="outerHTML">Delete</button>
+        <!-- Mark for review: postpones the next review by 1 day -->
+        <button hx-post="/cards/{{ .ID }}/review" hx-target="#card-{{ .ID }}" hx-swap="outerHTML">Reviewed</button>
+      </li>
+    {{ else }}
+      <li>No cards found.</li>
+    {{ end }}
+  </ul>
+
+  <h2>Add a New Card</h2>
+  <form hx-post="/cards" hx-target="#cards-list" hx-swap="beforeend">
+    <label for="question">Question:</label><br>
+    <textarea id="question" name="question" required></textarea><br/>
+    <label for="answer">Answer:</label><br>
+    <textarea id="answer" name="answer" required></textarea><br/>
+    <label for="deck_id">Select Deck (optional):</label><br>
+    <select name="deck_id" id="deck_id">
+      <option value="">-- None --</option>
+      {{ range .decks }}
+        <option value="{{ .ID }}">{{ .Name }}</option>
+      {{ end }}
+    </select><br/>
+    <button type="submit">Add Card</button>
+  </form>
+</body>
+</html>
