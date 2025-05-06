@@ -22,6 +22,16 @@ jobs:
       run: |
         go build -o learning-management .
 
+    - name: Upload files via SCP
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        source: "learning-management,templates,static"
+        target: ${{ secrets.DEST_PATH }}
+
     - name: Deploy via SSH
       uses: appleboy/ssh-action@master
       with:
@@ -30,17 +40,5 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          # Ensure the destination directory exists.
-          mkdir -p ${{ secrets.DEST_PATH }}
-          
-          # Copy the new binary.
-          cp learning-management ${{ secrets.DEST_PATH }}/learning-management
-          
-          # Copy templates directory if needed.
-          cp -r templates ${{ secrets.DEST_PATH }}/templates
-          
-          # Copy static files if you have any.
-          cp -r static ${{ secrets.DEST_PATH }}/static
-          
           # Restart the application service.
           ${{ secrets.RESTART_SCRIPT }}
