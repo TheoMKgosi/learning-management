@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main    # Change this to match your deployment branch
+      - main   # Adjust this branch as needed
 
 jobs:
   build-and-deploy:
@@ -16,13 +16,12 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.24'   # Set to your Go version
+        go-version: '1.24'   # Update as needed
 
     - name: Build Application
       run: |
         go build -o learning-management .
 
-    # Option 1: Using a pre-made SSH Action that copies files and executes remote commands.
     - name: Deploy via SSH
       uses: appleboy/ssh-action@master
       with:
@@ -30,15 +29,18 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
-        # Copy the new binary and templates (adjust paths as needed):
         script: |
-          # Create the destination directory if it doesn’t exist.
+          # Ensure the destination directory exists.
           mkdir -p ${{ secrets.DEST_PATH }}
-          # Copy the binary. (You might use rsync or scp if you have many files.)
+          
+          # Copy the new binary.
           cp learning-management ${{ secrets.DEST_PATH }}/learning-management
-          # Copy templates directory (if needed)
+          
+          # Copy templates directory if needed.
           cp -r templates ${{ secrets.DEST_PATH }}/templates
-          # (Optional) copy any static files.
+          
+          # Copy static files if you have any.
           cp -r static ${{ secrets.DEST_PATH }}/static
-          # Restart the service (adjust the command as needed)
+          
+          # Restart the application service.
           ${{ secrets.RESTART_SCRIPT }}
